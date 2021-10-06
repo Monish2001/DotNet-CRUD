@@ -11,7 +11,7 @@ namespace CRUD.Controllers
 {
 
     // [Authorize(Roles = WC.AdminRole)]
-    [Route("api/applicationtype")]
+    // [Route("api/[controller]")]
     public class ApplicationTypeController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -21,51 +21,35 @@ namespace CRUD.Controllers
             _db = db;
         }
 
-        // [Route("/index")]
-        // [HttpGet]
-        // public ContentResult Get() { 
-        //     return Content("Hello, World! this message is from Home Controller using the Action Result"); 
-        // } 
 
-        [HttpGet]  
-        publicIEnumerable<string> Get()  
-        {  
-            returnnewstring[] { "value1", "value2" };  
-        } 
-
-
-        // [Route("api/v{v:apiVersion}/admin/admins")]
-        // [HttpGet]
-        // public IActionResult Get()
-        // public IActionResult Index()
-        // {
-        //     IEnumerable<ApplicationType> objList = _db.ApplicationType.ToList();
-        //     // return View(objList);
-        //     return objList;
-        // }
-
-
-        //GET - CREATE
-        // public IActionResult Create()
-        // {
-        //     return View();
-        // }
+        [HttpGet]
+        [Route("api/application-type")]
+        public IActionResult Get()
+        {
+            IEnumerable<ApplicationType> objList = _db.ApplicationType.ToArray();
+            // return View(objList);
+            return Ok(objList);
+        }
 
 
         // POST - CREATE
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public IActionResult Create(ApplicationType obj)
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         _db.ApplicationType.Add(obj);
-        //         _db.SaveChanges();
+        [HttpPost]
+        [Route("api/application-type")]
+        public IActionResult POST(ApplicationType obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.ApplicationType.Add(obj);
+                _db.SaveChanges();
+                string strng = string.Format("Success");
+                return Ok(strng);
                 // return RedirectToAction("Index");
-            // }
+            }
+            string strng1 = string.Format("Failed");
+            return NotFound(strng1);
             // return View(obj);
 
-        // }
+        }
 
 
         //GET - EDIT
