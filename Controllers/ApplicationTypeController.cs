@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-// using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CRUD.Data;
 using CRUD.Models;
@@ -10,8 +9,6 @@ using CRUD.Models;
 namespace CRUD.Controllers
 {
 
-    // [Authorize(Roles = WC.AdminRole)]
-    [Route("api/applicationtype")]
     public class ApplicationTypeController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -21,116 +18,69 @@ namespace CRUD.Controllers
             _db = db;
         }
 
-        // [Route("/index")]
-        // [HttpGet]
-        // public ContentResult Get() { 
-        //     return Content("Hello, World! this message is from Home Controller using the Action Result"); 
-        // } 
 
-        [HttpGet]  
-        publicIEnumerable<string> Get()  
-        {  
-            returnnewstring[] { "value1", "value2" };  
-        } 
-
-
-        // [Route("api/v{v:apiVersion}/admin/admins")]
-        // [HttpGet]
-        // public IActionResult Get()
-        // public IActionResult Index()
-        // {
-        //     IEnumerable<ApplicationType> objList = _db.ApplicationType.ToList();
-        //     // return View(objList);
-        //     return objList;
-        // }
-
-
-        //GET - CREATE
-        // public IActionResult Create()
-        // {
-        //     return View();
-        // }
+        [HttpGet]
+        [Route("api/application-type")]
+        public IActionResult Get()
+        {
+            IEnumerable<ApplicationType> objList = _db.ApplicationType.ToArray();
+            return Ok(objList);
+        }
 
 
         // POST - CREATE
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public IActionResult Create(ApplicationType obj)
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         _db.ApplicationType.Add(obj);
-        //         _db.SaveChanges();
-                // return RedirectToAction("Index");
-            // }
-            // return View(obj);
+        [HttpPost]
+        [Route("api/application-type")]
+        public IActionResult POST(ApplicationType obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.ApplicationType.Add(obj);
+                _db.SaveChanges();
 
-        // }
-
-
-        //GET - EDIT
-        // public IActionResult Edit(int? id)
-        // {
-        //     if (id == null || id == 0)
-        //     {
-        //         return NotFound();
-        //     }
-        //     var obj = _db.ApplicationType.Find(id);
-        //     if (obj == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return View(obj);
-        // }
+                return RedirectToAction("Get");
+            }
+            string strng1 = string.Format("Failed");
+            return NotFound(strng1);
+        }
 
         //POST - EDIT
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public IActionResult Edit(ApplicationType obj)
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         _db.ApplicationType.Update(obj);
-        //         _db.SaveChanges();
-        //         return RedirectToAction("Index");
-        //     }
-        //     return View(obj);
+        [HttpPut]
+        [Route("api/application-type/")]
+        public IActionResult PUT(int id,ApplicationType obj)
+        {
+            
+            var existingApplicationType = _db.ApplicationType.Where(s => s.id == id)
+                                                    .FirstOrDefault<ApplicationType>();
 
-        // }
+            if (existingApplicationType != null)
+            {
+                existingApplicationType.name = obj.name;
+                
+                _db.SaveChanges();
+            }
+            else
+            {
+                string strng1 = string.Format("Failed");
+                return NotFound(strng1);
+            }
+            return RedirectToAction("Get");
+        }
 
-        //GET - DELETE
-        // public IActionResult Delete(int? id)
-        // {
-        //     if (id == null || id == 0)
-        //     {
-        //         return NotFound();
-        //     }
-        //     var obj = _db.ApplicationType.Find(id);
-        //     if (obj == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return View(obj);
-        // }
-
-        //POST - DELETE
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public IActionResult DeletePost(int? id)
-        // {
-        //     var obj = _db.ApplicationType.Find(id);
-        //     if (obj == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     _db.ApplicationType.Remove(obj);
-        //     _db.SaveChanges();
-        //     return RedirectToAction("Index");
-
-
-        // }
+        
+        [HttpDelete]
+        [Route("api/application-type/")]
+        public IActionResult DELETE(int id)
+        {
+            var obj = _db.ApplicationType.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            _db.ApplicationType.Remove(obj);
+            _db.SaveChanges();
+            return RedirectToAction("Get");
+        }
 
     }
 }
